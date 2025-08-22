@@ -1,0 +1,41 @@
+{
+  "data_asset_type": null,
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": [
+          "id",
+          "period_days",
+          "start_date",
+          "end_date",
+          "avg_sentiment_polarity",
+          "total_posts",
+          "bullish_count",
+          "bearish_count",
+          "neutral_count",
+          "created_at"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_positive",
+      "kwargs": {
+        "column": "total_posts"
+      },
+      "meta": {}
+    }
+  ],
+  "ge_cloud_id": null,
+  "meta": {
+    "great_expectations_version": "0.14.7"
+  }
+}

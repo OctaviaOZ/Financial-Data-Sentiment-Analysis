@@ -1,0 +1,41 @@
+{
+  "data_asset_type": null,
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": [
+          "id",
+          "no_of_comments",
+          "sentiment",
+          "sentiment_score",
+          "ticker",
+          "title",
+          "body",
+          "created_utc"
+]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "sentiment_polarity",
+        "min_value": -1.0,
+        "max_value": 1.0
+      },
+      "meta": {}
+    }
+  ],
+  "ge_cloud_id": null,
+  "meta": {
+    "great_expectations_version": "0.14.7"
+  }
+}

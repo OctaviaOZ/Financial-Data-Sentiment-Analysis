@@ -1,0 +1,25 @@
+name: my_checkpoint
+config_version: 1.0
+class_name: SimpleCheckpoint
+run_name_template: "%Y%m%d-%H%M%S-my-run"
+
+validations:
+  - batch_request:
+      datasource_name: postgres_datasource
+      data_connector_name: default_runtime_data_connector
+      data_asset_name: reddit_posts
+      data_connector_query:
+        batch_filter_parameters: 
+          schema: public
+          table: reddit_posts
+    expectation_suite_name: reddit_posts_suite
+  - batch_request:
+      datasource_name: postgres_datasource
+      data_connector_name: default_runtime_data_connector
+      data_asset_name: trend_data
+      data_connector_query:
+        batch_filter_parameters: 
+          schema: public
+          table: trend_data
+    expectation_suite_name: trend_data_suite
+

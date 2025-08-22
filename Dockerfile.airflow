@@ -1,0 +1,51 @@
+# Use a specific Airflow image as base with Python 3.9
+FROM apache/airflow:2.7.0-python3.9
+
+# Switch to root to install system dependencies that require elevated privileges.
+USER root
+
+# Install build dependencies for psycopg2-binary and other potential packages.
+# IMPORTANT: Clear apt lists cache BEFORE updating to prevent permission issues.
+# Explicitly create and set permissions for the 'partial' directory in case it's missing or wrong perms.
+RUN rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /var/lib/apt/lists/partial \
+    && chmod 755 /var/lib/apt/lists/partial \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* # Clean again after install
+
+# Create Airflow user directories if they don't exist and set appropriate permissions.
+# Ensure permissions for the airflow user for these directories while still as root.
+RUN mkdir -p /opt/airflow/dags /opt/airflow/logs /opt/airflow/plugins /opt/airflow/great_expectations \
+    && chown -R airflow:root /opt/airflow/dags /opt/airflow/logs /opt/airflow/plugins /opt/airflow/great_expectations
+
+# Switch back to the 'airflow' user.
+# It's a security best practice to run application commands as a non-root user.
+USER airflow
+
+# Copy the requirements.txt file into the container
+COPY requirements.txt /tmp/requirements.txt
+
+# Install all Python dependencies from requirements.txt
+# --no-cache-dir: Prevents pip from saving downloaded packages, reducing image size.
+# --constraint: Ensures consistent installations across environments.
+#               Assumes base Airflow image has its own constraints file.
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# If you have custom plugins, copy them
+COPY plugins/ /opt/airflow/plugins/
+
+# Copy DAGs (they will be managed by volume mounts anyway, but good for local testing)
+COPY dags/ /opt/airflow/dags/
+
+# Copy Great Expectations configuration
+COPY great_expectations/ /opt/airflow/great_expectations/
+# Also copy your microservice source code so Airflow can import from it.
+COPY src/ /opt/airflow/src/
+
+# Set the AIRFLOW_HOME environment variable
+ENV AIRFLOW_HOME=/opt/airflow
+ENV PYTHONPATH=/opt/airflow/src:$PYTHONPATH

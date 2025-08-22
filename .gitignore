@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-wheel-metadata/
+.installed.cfg
+*.egg-info/
+
+# Environment
+.env
+
+# Data
+/data/*.json
+
+# Logs
+/logs/
+
+# Great Expectations
+/great_expectations/uncommitted/
+
+# OS-specific
+.DS_Store
